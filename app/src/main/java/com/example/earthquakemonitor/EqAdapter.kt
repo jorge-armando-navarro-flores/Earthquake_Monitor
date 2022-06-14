@@ -4,14 +4,23 @@ import android.media.audiofx.DynamicsProcessing
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.earthquakemonitor.databinding.EqListItemBinding
 
 private val TAG = EqAdapter::class.java.simpleName
-class EqAdapter (
-    private val dataset: List<Earthquake>
-        ): RecyclerView.Adapter<EqAdapter.EqViewHolder>() {
+class EqAdapter : ListAdapter<Earthquake, EqAdapter.EqViewHolder>(DiffCallback){
 
+    companion object DiffCallback : DiffUtil.ItemCallback<Earthquake>() {
+        override fun areItemsTheSame(oldItem: Earthquake, newItem: Earthquake): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Earthquake, newItem: Earthquake): Boolean {
+            return oldItem == newItem
+        }
+    }
 
     lateinit var onItemClickListener: (Earthquake) -> Unit
 
@@ -21,7 +30,7 @@ class EqAdapter (
     }
 
     override fun onBindViewHolder(holder: EqAdapter.EqViewHolder, position: Int) {
-        val earthquake = dataset[position]
+        val earthquake = getItem(position)
         holder.bind(earthquake)
     }
 
@@ -34,7 +43,7 @@ class EqAdapter (
                 if (::onItemClickListener.isInitialized){
                     onItemClickListener(earthquake)
                 } else {
-                    Log.e(TAG, "onItemClickListener not initialized")
+                    onItemClickListener(earthquake)
                 }
 
             }
@@ -42,5 +51,4 @@ class EqAdapter (
         }
     }
 
-    override fun getItemCount() = dataset.size
 }
