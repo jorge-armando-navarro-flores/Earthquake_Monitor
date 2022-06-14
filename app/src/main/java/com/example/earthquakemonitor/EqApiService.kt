@@ -7,7 +7,7 @@ import retrofit2.http.GET
 
 interface EqApiService {
     @GET("all_hour.geojson")
-    fun getLastHourEarthquakes(): String
+    suspend fun getLastHourEarthquakes(): String
 }
 
 private var retrofit = Retrofit.Builder()
